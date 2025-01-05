@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { IngredientShortcuts } from "./IngredientShortcuts";
 
 interface RecipeFormProps {
   ingredients: string;
@@ -41,11 +42,31 @@ export const RecipeForm = ({
     onSubmit();
   };
 
+  const handleIngredientClick = (ingredient: string) => {
+    const currentIngredients = ingredients.trim();
+    const separator = currentIngredients ? ", " : "";
+    
+    if (ingredient === "frozen") {
+      // If frozen is clicked, modify the last ingredient
+      const ingredientsList = currentIngredients.split(", ");
+      if (ingredientsList.length > 0 && !ingredientsList[ingredientsList.length - 1].includes("frozen")) {
+        ingredientsList[ingredientsList.length - 1] = `frozen ${ingredientsList[ingredientsList.length - 1]}`;
+        setIngredients(ingredientsList.join(", "));
+      }
+    } else {
+      // Add new ingredient
+      setIngredients(currentIngredients + separator + ingredient);
+    }
+    
+    console.log("Updated ingredients:", ingredients + separator + ingredient);
+  };
+
   return (
     <Card className="max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 border-2 border-purple-100 dark:border-purple-900">
       <CardContent className="space-y-6 pt-6">
         <div className="space-y-2">
           <Label htmlFor="ingredients" className="text-lg font-semibold">Your Ingredients</Label>
+          <IngredientShortcuts onIngredientClick={handleIngredientClick} />
           <Textarea
             id="ingredients"
             placeholder="Enter ingredients (e.g., mango, berries, spinach)"
