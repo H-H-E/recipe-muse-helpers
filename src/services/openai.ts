@@ -7,8 +7,12 @@ interface Recipe {
   nutritionalBenefits?: string[];
 }
 
-export const generateSmoothieRecipes = async (ingredients: string, numIdeas: number): Promise<Recipe[]> => {
-  console.log('Generating smoothie recipes with:', { ingredients, numIdeas });
+export const generateSmoothieRecipes = async (
+  ingredients: string,
+  numIdeas: number,
+  strictMode: boolean
+): Promise<Recipe[]> => {
+  console.log('Generating smoothie recipes with:', { ingredients, numIdeas, strictMode });
   
   const apiKey = localStorage.getItem('OPENAI_API_KEY');
   if (!apiKey) {
@@ -26,8 +30,7 @@ export const generateSmoothieRecipes = async (ingredients: string, numIdeas: num
 Follow these steps to create your smoothie ideas:
 1. Analyze the given ingredients, considering their taste profiles, nutritional benefits, and how they might complement each other.
 2. For each smoothie:
-   - Choose ingredients that work well together
-   - Add complementary ingredients that enhance flavor or nutrition
+   - ${strictMode ? 'ONLY use ingredients from the provided list' : 'Use some or all of the provided ingredients, plus complementary ingredients'}
    - Consider texture and consistency
    - Create a creative name
 3. Guidelines for balanced smoothies:
@@ -49,7 +52,7 @@ Always return your response in valid JSON format with the exact structure shown 
         },
         {
           role: "user",
-          content: `Generate ${numIdeas} smoothie recipes using some or all of these ingredients: ${ingredients}. 
+          content: `Generate ${numIdeas} smoothie recipes using ${strictMode ? 'only' : 'some or all of'} these ingredients: ${ingredients}. 
           Return the response in this exact JSON format:
           {
             "recipes": [

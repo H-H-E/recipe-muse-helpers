@@ -4,17 +4,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Key, Lock, ExternalLink } from "lucide-react";
+import { Key, Lock, ExternalLink } from "lucide-react";
 import { generateSmoothieRecipes } from "@/services/openai";
 import { RecipeDisplay } from "@/components/RecipeDisplay";
+import { SmoothieLoader } from "@/components/SmoothieLoader";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 const Index = () => {
   const [ingredients, setIngredients] = useState("");
-  const [numIdeas, setNumIdeas] = useState(3);
+  const [numIdeas, setNumIdeas] = useState(1);
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [apiKey, setApiKey] = useState("");
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
+  const [strictMode, setStrictMode] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -65,12 +70,12 @@ const Index = () => {
 
     setLoading(true);
     try {
-      const response = await generateSmoothieRecipes(ingredients, numIdeas);
+      const response = await generateSmoothieRecipes(ingredients, numIdeas, strictMode);
       setRecipes(response);
       
       toast({
         title: "Success!",
-        description: "Your smoothie recipes are ready!",
+        description: `Generated ${numIdeas} smoothie recipe${numIdeas > 1 ? 's' : ''}!`,
       });
     } catch (error) {
       console.error('Error:', error);
@@ -129,46 +134,63 @@ const Index = () => {
 
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-3xl text-center">Smoothie Recipe Generator</CardTitle>
+          <CardTitle className="text-3xl text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Smoothie Recipe Generator
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Ingredients</label>
+            <Label htmlFor="ingredients">Ingredients</Label>
             <Textarea
+              id="ingredients"
               placeholder="Enter ingredients (e.g., mango, berries, spinach)"
               value={ingredients}
               onChange={(e) => setIngredients(e.target.value)}
-              className="min-h-[100px]"
+              className="min-h-[100px] resize-none"
             />
           </div>
           
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Number of Ideas</label>
-            <Input
-              type="number"
-              min={1}
-              max={10}
-              value={numIdeas}
-              onChange={(e) => setNumIdeas(Number(e.target.value))}
-            />
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="strict-mode">Strict Mode</Label>
+                <p className="text-sm text-muted-foreground">
+                  Only use the ingredients you've listed
+                </p>
+              </div>
+              <Switch
+                id="strict-mode"
+                checked={strictMode}
+                onCheckedChange={setStrictMode}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Number of Recipes: {numIdeas}</Label>
+                <Slider
+                  value={[numIdeas]}
+                  onValueChange={(value) => setNumIdeas(value[0])}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+            </div>
           </div>
 
           <Button 
             onClick={generateSmoothies} 
-            className="w-full"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300"
             disabled={loading}
           >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Recipes...
-              </>
-            ) : (
-              "Generate Smoothie Recipes"
-            )}
+            Generate Smoothie Recipes
           </Button>
 
-          {recipes.length > 0 && (
+          {loading ? (
+            <SmoothieLoader />
+          ) : recipes.length > 0 && (
             <div className="mt-6">
               <RecipeDisplay recipes={recipes} />
             </div>
