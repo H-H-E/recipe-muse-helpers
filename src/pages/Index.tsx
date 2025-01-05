@@ -6,12 +6,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Key, Lock, ExternalLink } from "lucide-react";
 import { generateSmoothieRecipes } from "@/services/openai";
+import { RecipeDisplay } from "@/components/RecipeDisplay";
 
 const Index = () => {
   const [ingredients, setIngredients] = useState("");
   const [numIdeas, setNumIdeas] = useState(3);
   const [loading, setLoading] = useState(false);
-  const [recipes, setRecipes] = useState<string>("");
+  const [recipes, setRecipes] = useState([]);
   const [apiKey, setApiKey] = useState("");
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
   const { toast } = useToast();
@@ -73,7 +74,6 @@ const Index = () => {
       });
     } catch (error) {
       console.error('Error:', error);
-      // If the error is due to an invalid API key, show the configuration again
       if (error.message?.includes('API key')) {
         setIsKeyConfigured(false);
       }
@@ -168,14 +168,9 @@ const Index = () => {
             )}
           </Button>
 
-          {recipes && (
-            <div className="mt-6 space-y-4">
-              <h3 className="text-xl font-semibold">Your Smoothie Recipes</h3>
-              <div className="prose max-w-none">
-                <pre className="whitespace-pre-wrap bg-secondary p-4 rounded-lg">
-                  {recipes}
-                </pre>
-              </div>
+          {recipes.length > 0 && (
+            <div className="mt-6">
+              <RecipeDisplay recipes={recipes} />
             </div>
           )}
         </CardContent>
