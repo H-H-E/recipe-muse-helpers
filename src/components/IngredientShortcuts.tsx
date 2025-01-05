@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { 
   Banana, Cherry, Apple, Carrot, IceCream, 
-  Grape, Lemon, Orange, Milk, Leaf,
+  Grape, Citrus, Milk, Leaf,
   Wheat, Coffee, ArrowLeft, ArrowRight
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -20,9 +20,9 @@ export const IngredientShortcuts = ({ onIngredientClick }: IngredientShortcutsPr
     { icon: Banana, name: "banana", label: "Banana" },
     { icon: Cherry, name: "berries", label: "Berries" },
     { icon: Apple, name: "apple", label: "Apple" },
-    { icon: Orange, name: "orange", label: "Orange" },
+    { icon: Citrus, name: "orange", label: "Orange" },
     { icon: Grape, name: "grapes", label: "Grapes" },
-    { icon: Lemon, name: "lemon", label: "Lemon" },
+    { icon: Citrus, name: "lemon", label: "Lemon" },
     { icon: Carrot, name: "carrot", label: "Carrot" },
     { icon: Leaf, name: "spinach", label: "Spinach" },
     { icon: Milk, name: "yogurt", label: "Yogurt" },
