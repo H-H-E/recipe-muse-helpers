@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Key, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ApiKeyConfigProps {
   apiKey: string;
@@ -13,7 +14,7 @@ interface ApiKeyConfigProps {
 export const ApiKeyConfig = ({ apiKey, setApiKey, setIsKeyConfigured }: ApiKeyConfigProps) => {
   const { toast } = useToast();
 
-  const handleSaveApiKey = () => {
+  const handleSaveApiKey = async () => {
     if (!apiKey.trim()) {
       toast({
         title: "Error",
@@ -22,12 +23,27 @@ export const ApiKeyConfig = ({ apiKey, setApiKey, setIsKeyConfigured }: ApiKeyCo
       });
       return;
     }
-    localStorage.setItem('OPENAI_API_KEY', apiKey);
-    setIsKeyConfigured(true);
-    toast({
-      title: "Success",
-      description: "API key saved successfully!",
-    });
+
+    try {
+      const { error } = await supabase
+        .from('api_keys')
+        .insert([{ key_value: apiKey }]);
+
+      if (error) throw error;
+
+      setIsKeyConfigured(true);
+      toast({
+        title: "Success",
+        description: "API key saved successfully!",
+      });
+    } catch (error) {
+      console.error('Error saving API key:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save API key",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

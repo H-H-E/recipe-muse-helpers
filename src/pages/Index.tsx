@@ -10,6 +10,7 @@ import { SavedSmoothies } from "@/components/SavedSmoothies";
 import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [ingredients, setIngredients] = useState("");
@@ -22,11 +23,28 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const savedKey = localStorage.getItem('OPENAI_API_KEY');
-    if (savedKey) {
-      setApiKey(savedKey);
-      setIsKeyConfigured(true);
-    }
+    const fetchApiKey = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('api_keys')
+          .select('key_value')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) throw error;
+        
+        if (data) {
+          setApiKey(data.key_value);
+          setIsKeyConfigured(true);
+        }
+      } catch (error) {
+        console.error('Error fetching API key:', error);
+        setIsKeyConfigured(false);
+      }
+    };
+
+    fetchApiKey();
   }, []);
 
   const generateSmoothies = async () => {

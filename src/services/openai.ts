@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Recipe {
   name: string;
@@ -14,13 +15,20 @@ export const generateSmoothieRecipes = async (
 ): Promise<Recipe[]> => {
   console.log('Generating smoothie recipes with:', { ingredients, numIdeas, strictMode });
   
-  const apiKey = localStorage.getItem('OPENAI_API_KEY');
-  if (!apiKey) {
+  // Fetch the API key from Supabase
+  const { data, error } = await supabase
+    .from('api_keys')
+    .select('key_value')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error || !data) {
     throw new Error('OpenAI API key not found. Please set your API key first.');
   }
 
   const openai = new OpenAI({
-    apiKey: apiKey,
+    apiKey: data.key_value,
     dangerouslyAllowBrowser: true
   });
   
