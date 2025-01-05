@@ -13,11 +13,15 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState<string>("");
   const [apiKey, setApiKey] = useState("");
+  const [isKeyConfigured, setIsKeyConfigured] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const savedKey = localStorage.getItem('OPENAI_API_KEY');
-    if (savedKey) setApiKey(savedKey);
+    if (savedKey) {
+      setApiKey(savedKey);
+      setIsKeyConfigured(true);
+    }
   }, []);
 
   const handleSaveApiKey = () => {
@@ -30,6 +34,7 @@ const Index = () => {
       return;
     }
     localStorage.setItem('OPENAI_API_KEY', apiKey);
+    setIsKeyConfigured(true);
     toast({
       title: "Success",
       description: "API key saved successfully!",
@@ -48,6 +53,7 @@ const Index = () => {
 
     const apiKey = localStorage.getItem('OPENAI_API_KEY');
     if (!apiKey) {
+      setIsKeyConfigured(false);
       toast({
         title: "Error",
         description: "Please set your OpenAI API key first",
@@ -67,6 +73,10 @@ const Index = () => {
       });
     } catch (error) {
       console.error('Error:', error);
+      // If the error is due to an invalid API key, show the configuration again
+      if (error.message?.includes('API key')) {
+        setIsKeyConfigured(false);
+      }
       toast({
         title: "Error",
         description: "Failed to generate smoothie recipes. Please check your API key and try again.",
@@ -79,41 +89,43 @@ const Index = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 space-y-8">
-      <Card className="max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">OpenAI API Configuration</CardTitle>
-          <p className="text-sm text-muted-foreground text-center">
-            To use the Smoothie Recipe Generator, you'll need an OpenAI API key
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Input
-                type="password"
-                placeholder="Enter your OpenAI API key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="pr-10"
-              />
-              <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+      {!isKeyConfigured && (
+        <Card className="max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">OpenAI API Configuration</CardTitle>
+            <p className="text-sm text-muted-foreground text-center">
+              To use the Smoothie Recipe Generator, you'll need an OpenAI API key
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type="password"
+                  placeholder="Enter your OpenAI API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="pr-10"
+                />
+                <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              </div>
+              <Button onClick={handleSaveApiKey} className="flex gap-2">
+                <Key className="w-4 h-4" />
+                Save Key
+              </Button>
             </div>
-            <Button onClick={handleSaveApiKey} className="flex gap-2">
-              <Key className="w-4 h-4" />
-              Save Key
-            </Button>
-          </div>
-          <a
-            href="https://platform.openai.com/api-keys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Get your OpenAI API key here
-          </a>
-        </CardContent>
-      </Card>
+            <a
+              href="https://platform.openai.com/api-keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Get your OpenAI API key here
+            </a>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
