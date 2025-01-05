@@ -10,8 +10,7 @@ export const Header = () => {
         </h1>
       </div>
       <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-center leading-relaxed">
-        Transform your ingredients into delightful smoothie creations. Our AI-powered recipe generator 
-        crafts perfectly balanced combinations for a healthier you.
+        You WILL drink the AI slop
       </p>
     </header>
   );
