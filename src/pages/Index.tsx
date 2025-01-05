@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast, toast } from "@/hooks/use-toast";
 import { generateSmoothieRecipes } from "@/services/openai";
 import { RecipeDisplay } from "@/components/RecipeDisplay";
 import { SmoothieLoader } from "@/components/SmoothieLoader";
