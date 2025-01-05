@@ -1,16 +1,23 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: localStorage.getItem('OPENAI_API_KEY') || '',
-  dangerouslyAllowBrowser: true
-});
-
 export const generateSmoothieRecipes = async (ingredients: string, numIdeas: number) => {
   console.log('Generating smoothie recipes with:', { ingredients, numIdeas });
   
+  // Get the current API key from localStorage
+  const apiKey = localStorage.getItem('OPENAI_API_KEY');
+  if (!apiKey) {
+    throw new Error('OpenAI API key not found. Please set your API key first.');
+  }
+
+  // Create a new OpenAI instance with the current API key
+  const openai = new OpenAI({
+    apiKey: apiKey,
+    dangerouslyAllowBrowser: true
+  });
+  
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4-turbo-preview",
       messages: [
         {
           role: "system",
