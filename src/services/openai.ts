@@ -21,13 +21,31 @@ export const generateSmoothieRecipes = async (ingredients: string, numIdeas: num
   });
   
   try {
+    const systemPrompt = `You are a creative smoothie expert tasked with generating unique and delicious smoothie ideas based on given ingredients or flavors. Your goal is to create appealing smoothie combinations that are both nutritious and flavorful.
+
+Follow these steps to create your smoothie ideas:
+1. Analyze the given ingredients, considering their taste profiles, nutritional benefits, and how they might complement each other.
+2. For each smoothie:
+   - Choose ingredients that work well together
+   - Add complementary ingredients that enhance flavor or nutrition
+   - Consider texture and consistency
+   - Create a creative name
+3. Guidelines for balanced smoothies:
+   - Mix sweet and tart flavors
+   - Include creamy elements
+   - Add appropriate liquid bases
+   - Consider nutritional boosters
+   - Use spices/herbs for complexity
+
+Always return your response in valid JSON format with the exact structure shown in the example.`;
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
-          content: `You are a creative smoothie expert. Generate unique and delicious smoothie recipes in JSON format. Each recipe should include a creative name, list of ingredients, step-by-step instructions, and nutritional benefits.`
+          content: systemPrompt
         },
         {
           role: "user",
