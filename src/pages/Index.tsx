@@ -6,6 +6,10 @@ import { SmoothieLoader } from "@/components/SmoothieLoader";
 import { Header } from "@/components/Header";
 import { ApiKeyConfig } from "@/components/ApiKeyConfig";
 import { RecipeForm } from "@/components/RecipeForm";
+import { SavedSmoothies } from "@/components/SavedSmoothies";
+import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
+import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
 
 const Index = () => {
   const [ingredients, setIngredients] = useState("");
@@ -50,6 +54,16 @@ const Index = () => {
     }
   };
 
+  const handleSaveRecipes = () => {
+    if (recipes.length === 0) return;
+    
+    saveSmoothieRecipes(recipes, ingredients);
+    toast({
+      title: "Success!",
+      description: "Recipes saved successfully!",
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 space-y-8 min-h-screen bg-gradient-to-br from-white to-purple-50 dark:from-gray-950 dark:to-purple-950">
       <Header />
@@ -76,10 +90,21 @@ const Index = () => {
           {loading ? (
             <SmoothieLoader />
           ) : recipes.length > 0 && (
-            <div className="mt-6">
+            <div className="mt-6 space-y-4">
+              <div className="flex justify-end">
+                <Button
+                  onClick={handleSaveRecipes}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Recipes
+                </Button>
+              </div>
               <RecipeDisplay recipes={recipes} />
             </div>
           )}
+
+          <SavedSmoothies />
         </>
       )}
     </div>
