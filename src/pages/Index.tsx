@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useToast, toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { generateSmoothieRecipes } from "@/services/openai";
 import { RecipeDisplay } from "@/components/RecipeDisplay";
 import { SmoothieLoader } from "@/components/SmoothieLoader";
@@ -15,6 +15,7 @@ const Index = () => {
   const [apiKey, setApiKey] = useState("");
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
   const [strictMode, setStrictMode] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const savedKey = localStorage.getItem('OPENAI_API_KEY');
