@@ -19,8 +19,6 @@ export const generateSmoothieRecipes = async (
   const { data, error } = await supabase
     .from('api_keys')
     .select('key_value')
-    .order('created_at', { ascending: false })
-    .limit(1)
     .maybeSingle();
 
   if (error || !data) {
@@ -51,7 +49,7 @@ Follow these steps to create your smoothie ideas:
 Always return your response in valid JSON format with the exact structure shown in the example.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
       messages: [
         {
