@@ -1,12 +1,137 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
+  const [ingredients, setIngredients] = useState("");
+  const [numIdeas, setNumIdeas] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [recipes, setRecipes] = useState<string>("");
+  const { toast } = useToast();
+
+  const generateSmoothies = async () => {
+    if (!ingredients.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter some ingredients",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const prompt = `You are a creative smoothie expert tasked with generating unique and delicious smoothie ideas based on given ingredients or flavors.
+
+<ingredients>${ingredients}</ingredients>
+<num_ideas>${numIdeas}</num_ideas>
+
+Follow these steps to create your smoothie ideas:
+
+1. Analyze the given ingredients or flavors, considering their taste profiles, nutritional benefits, and how they might complement each other.
+
+2. For each smoothie idea:
+   a. Choose a combination of ingredients that work well together, including at least one item from the provided list.
+   b. Consider adding complementary ingredients that enhance the flavor profile or nutritional value.
+   c. Think about the texture and consistency of the smoothie.
+   d. If appropriate, suggest a creative name for the smoothie.
+
+3. Keep in mind the following guidelines for balanced and delicious smoothies:
+   - Aim for a mix of sweet and tart flavors.
+   - Include a creamy element (e.g., banana, avocado, or yogurt) for texture.
+   - Consider adding a liquid base (e.g., almond milk, coconut water) if not specified in the ingredients.
+   - Incorporate nutritional boosters like leafy greens or superfoods when appropriate.
+   - Use spices or herbs to add depth and complexity to the flavor profile.
+
+4. Present your smoothie ideas in a clear, numbered list format.`;
+
+      // Since we don't have an API key yet, we'll simulate the response
+      // In a real app, you would make an API call here
+      const simulatedResponse = `<smoothie_ideas>
+1. Tropical Paradise Blast: Mango, banana, coconut water, and a hint of lime
+2. Berry Bliss Bowl: Mixed berries, Greek yogurt, honey, and chia seeds
+3. Green Goddess Glow: Spinach, apple, cucumber, ginger, and coconut water
+</smoothie_ideas>`;
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setRecipes(simulatedResponse);
+      
+      toast({
+        title: "Success!",
+        description: "Your smoothie recipes are ready!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate smoothie recipes",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="container mx-auto py-8 px-4">
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-3xl text-center">Smoothie Recipe Generator</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Ingredients</label>
+            <Textarea
+              placeholder="Enter ingredients (e.g., mango, berries, spinach)"
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Number of Ideas</label>
+            <Input
+              type="number"
+              min={1}
+              max={10}
+              value={numIdeas}
+              onChange={(e) => setNumIdeas(Number(e.target.value))}
+            />
+          </div>
+
+          <Button 
+            onClick={generateSmoothies} 
+            className="w-full"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating Recipes...
+              </>
+            ) : (
+              "Generate Smoothie Recipes"
+            )}
+          </Button>
+
+          {recipes && (
+            <div className="mt-6 space-y-4">
+              <h3 className="text-xl font-semibold">Your Smoothie Recipes</h3>
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap bg-secondary p-4 rounded-lg">
+                  {recipes}
+                </pre>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
