@@ -25,24 +25,10 @@ export const ApiKeyConfig = ({ apiKey, setApiKey, setIsKeyConfigured }: ApiKeyCo
     }
 
     try {
-      // Check if an API key already exists
-      const { data: existingKey } = await supabase
-        .from('api_keys')
-        .select('id')
-        .maybeSingle();
-
-      if (existingKey) {
-        toast({
-          title: "Error",
-          description: "An API key is already configured for the application",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('api_keys')
-        .insert([{ key_value: apiKey }]);
+      const { error } = await supabase.functions.invoke('manage-openai-key', {
+        method: 'POST',
+        body: { apiKey }
+      });
 
       if (error) throw error;
 

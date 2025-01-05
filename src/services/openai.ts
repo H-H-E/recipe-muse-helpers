@@ -15,18 +15,17 @@ export const generateSmoothieRecipes = async (
 ): Promise<Recipe[]> => {
   console.log('Generating smoothie recipes with:', { ingredients, numIdeas, strictMode });
   
-  // Fetch the API key from Supabase
-  const { data, error } = await supabase
-    .from('api_keys')
-    .select('key_value')
-    .maybeSingle();
+  // Fetch the API key from the Edge Function
+  const { data: { key }, error: keyError } = await supabase.functions.invoke('manage-openai-key', {
+    method: 'GET'
+  });
 
-  if (error || !data) {
+  if (keyError || !key) {
     throw new Error('OpenAI API key not found. Please set your API key first.');
   }
 
   const openai = new OpenAI({
-    apiKey: data.key_value,
+    apiKey: key,
     dangerouslyAllowBrowser: true
   });
   
@@ -49,7 +48,7 @@ Follow these steps to create your smoothie ideas:
 Always return your response in valid JSON format with the exact structure shown in the example.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4",
       response_format: { type: "json_object" },
       messages: [
         {
