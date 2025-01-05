@@ -21,7 +21,7 @@ export const generateSmoothieRecipes = async (
     .select('key_value')
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     throw new Error('OpenAI API key not found. Please set your API key first.');

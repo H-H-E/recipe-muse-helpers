@@ -30,13 +30,15 @@ const Index = () => {
           .select('key_value')
           .order('created_at', { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         
         if (data) {
           setApiKey(data.key_value);
           setIsKeyConfigured(true);
+        } else {
+          setIsKeyConfigured(false);
         }
       } catch (error) {
         console.error('Error fetching API key:', error);
