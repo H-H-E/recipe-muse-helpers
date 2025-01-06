@@ -57,11 +57,13 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
 
       {loading ? (
         <SmoothieLoader />
-      ) : recipes.length > 0 && (
-        <RecipeGalleries 
-          currentRecipes={recipes}
-          ingredients={ingredients}
-        />
+      ) : (
+        <div className="mt-8">
+          <RecipeGalleries 
+            currentRecipes={recipes}
+            ingredients={ingredients}
+          />
+        </div>
       )}
     </div>
   );
