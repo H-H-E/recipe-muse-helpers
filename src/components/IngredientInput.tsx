@@ -50,31 +50,32 @@ export const IngredientInput = ({
   };
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor="ingredients" className="text-lg font-semibold">Your Ingredients</Label>
+    <div className="space-y-2 w-full max-w-full px-2 sm:px-0">
+      <Label htmlFor="ingredients" className="text-lg font-semibold block">Your Ingredients</Label>
       <IngredientShortcuts onIngredientClick={onIngredientClick} />
       <Textarea
         id="ingredients"
         placeholder="Enter ingredients (e.g., mango, berries, spinach)"
         value={ingredients}
         onChange={(e) => setIngredients(e.target.value)}
-        className="min-h-[100px] resize-none bg-white/50 dark:bg-gray-950/50"
+        className="min-h-[100px] resize-none bg-white/50 dark:bg-gray-950/50 w-full"
       />
       
       {ingredients && (
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="checklist">
-            <AccordionTrigger className="text-sm">
+            <AccordionTrigger className="text-sm py-2">
               Ingredient Checklist
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-2">
+              <div className="space-y-2 px-1">
                 {Object.keys(checkedIngredients).map((ingredient) => (
-                  <div key={ingredient} className="flex items-center space-x-2">
+                  <div key={ingredient} className="flex items-center space-x-3 py-1">
                     <Checkbox
                       id={`check-${ingredient}`}
                       checked={checkedIngredients[ingredient]}
                       onCheckedChange={(checked) => handleCheckChange(ingredient, checked as boolean)}
+                      className="h-4 w-4"
                     />
                     <label
                       htmlFor={`check-${ingredient}`}
