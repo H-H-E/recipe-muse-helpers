@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
+import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
 import { useToast } from "@/hooks/use-toast";
 import { ViewToggle } from "./recipe-gallery/ViewToggle";
 import { CurrentRecipes } from "./recipe-gallery/CurrentRecipes";
