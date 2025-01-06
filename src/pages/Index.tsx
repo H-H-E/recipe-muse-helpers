@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { ApiKeyConfig } from "@/components/ApiKeyConfig";
 import { RecipeSection } from "@/components/RecipeSection";
 import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
@@ -43,20 +43,22 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="container mx-auto py-8 px-4 space-y-8 min-h-screen bg-gradient-to-br from-white to-purple-50 dark:from-gray-950 dark:to-purple-950">
-      <Header />
-      
-      {!isKeyConfigured ? (
-        <ApiKeyConfig />
-      ) : (
-        <div className="space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 dark:from-gray-950 dark:to-purple-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Header />
+        
+        {!isKeyConfigured ? (
+          <div className="max-w-2xl mx-auto">
+            <ApiKeyConfig />
+          </div>
+        ) : (
           <RecipeSection onError={(message) => {
             if (message.includes('API key')) {
               setIsKeyConfigured(false);
             }
           }} />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

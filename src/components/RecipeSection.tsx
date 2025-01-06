@@ -43,28 +43,30 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
   };
 
   return (
-    <div className="space-y-8">
-      <RecipeForm 
-        ingredients={ingredients}
-        setIngredients={setIngredients}
-        numIdeas={numIdeas}
-        setNumIdeas={setNumIdeas}
-        strictMode={strictMode}
-        setStrictMode={setStrictMode}
-        onSubmit={handleSubmit}
-        loading={loading}
-      />
+    <div className="grid lg:grid-cols-[400px,1fr] gap-8 items-start">
+      <div className="lg:sticky lg:top-8">
+        <RecipeForm 
+          ingredients={ingredients}
+          setIngredients={setIngredients}
+          numIdeas={numIdeas}
+          setNumIdeas={setNumIdeas}
+          strictMode={strictMode}
+          setStrictMode={setStrictMode}
+          onSubmit={handleSubmit}
+          loading={loading}
+        />
+      </div>
       
-      {loading ? (
-        <SmoothieLoader />
-      ) : (
-        <div className="mt-8">
+      <div className="space-y-8">
+        {loading ? (
+          <SmoothieLoader />
+        ) : (
           <RecipeGalleries 
             currentRecipes={recipes}
             ingredients={ingredients}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
