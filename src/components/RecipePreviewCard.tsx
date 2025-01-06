@@ -27,6 +27,17 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
     e.stopPropagation();
     if (onSave) {
       onSave();
+      // Create flying paper animation
+      const button = e.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const paper = document.createElement('div');
+      paper.className = 'fixed w-4 h-4 bg-purple-500 rounded-sm z-50 animate-fly-to-save';
+      paper.style.top = `${rect.top}px`;
+      paper.style.left = `${rect.left}px`;
+      document.body.appendChild(paper);
+      
+      setTimeout(() => paper.remove(), 1000);
+
       toast({
         title: "Success",
         description: "Recipe saved successfully!",
@@ -48,7 +59,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="cursor-pointer hover:scale-105 transition-transform duration-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+        <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 animate-fade-in">
           <CardContent className="p-4 space-y-4">
             <div className="flex justify-between items-start">
               <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-300">
@@ -60,7 +71,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                     variant="ghost"
                     size="icon"
                     onClick={handleSave}
-                    className="h-8 w-8"
+                    className="h-8 w-8 transition-transform active:scale-90"
                   >
                     <Save className="h-4 w-4" />
                   </Button>
@@ -70,7 +81,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                     variant="ghost"
                     size="icon"
                     onClick={handleDelete}
-                    className="h-8 w-8 text-red-500 hover:text-red-600"
+                    className="h-8 w-8 text-red-500 hover:text-red-600 transition-transform active:scale-90"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -86,13 +97,15 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                   <Badge 
                     key={idx}
                     variant="secondary" 
-                    className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100"
+                    className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100 transition-all hover:scale-105"
                   >
                     {ingredient.split(',')[0]}
                   </Badge>
                 ))}
                 {recipe.ingredients.length > 3 && (
-                  <Badge variant="outline">+{recipe.ingredients.length - 3} more</Badge>
+                  <Badge variant="outline" className="transition-all hover:scale-105">
+                    +{recipe.ingredients.length - 3} more
+                  </Badge>
                 )}
               </div>
             </div>
