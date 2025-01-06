@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RecipePreviewCard } from "./RecipePreviewCard";
-import { GalleryHorizontal, GalleryVertical, GalleryThumbnails } from "lucide-react";
+import { GalleryHorizontal, GalleryThumbnails } from "lucide-react";
 import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,14 +19,12 @@ interface RecipeGalleriesProps {
 }
 
 export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleriesProps) => {
-  const [galleryType, setGalleryType] = useState<"grid" | "masonry" | "carousel">("grid");
+  const [galleryType, setGalleryType] = useState<"grid" | "carousel">("grid");
   const { toast } = useToast();
   const savedSmoothies = getSavedSmoothies();
 
   const getGalleryClasses = () => {
     switch (galleryType) {
-      case "masonry":
-        return "columns-2 md:columns-3 gap-4 space-y-4";
       case "carousel":
         return "flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory";
       default:
@@ -66,15 +64,6 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
               title="Grid View"
             >
               <GalleryThumbnails className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setGalleryType("masonry")}
-              className={`p-2 rounded-md transition-colors ${
-                galleryType === "masonry" ? "bg-purple-100 dark:bg-purple-900" : ""
-              }`}
-              title="Masonry View"
-            >
-              <GalleryVertical className="w-5 h-5" />
             </button>
             <button
               onClick={() => setGalleryType("carousel")}
