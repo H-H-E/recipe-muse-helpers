@@ -3,6 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RecipePreviewCard } from "./RecipePreviewCard";
 import { GalleryHorizontal, GalleryVertical, GalleryThumbnails } from "lucide-react";
+import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
+import { useToast } from "@/hooks/use-toast";
 
 interface Recipe {
   name: string;
@@ -13,11 +15,13 @@ interface Recipe {
 
 interface RecipeGalleriesProps {
   currentRecipes: Recipe[];
-  savedRecipes: Recipe[];
+  ingredients: string;
 }
 
-export const RecipeGalleries = ({ currentRecipes, savedRecipes }: RecipeGalleriesProps) => {
+export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleriesProps) => {
   const [galleryType, setGalleryType] = useState<"grid" | "masonry" | "carousel">("grid");
+  const { toast } = useToast();
+  const savedSmoothies = getSavedSmoothies();
 
   const getGalleryClasses = () => {
     switch (galleryType) {
@@ -28,6 +32,20 @@ export const RecipeGalleries = ({ currentRecipes, savedRecipes }: RecipeGallerie
       default:
         return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
     }
+  };
+
+  const handleSaveRecipe = (recipe: Recipe) => {
+    saveSmoothieRecipes([recipe], ingredients);
+    toast({
+      title: "Success",
+      description: "Recipe saved successfully!",
+    });
+  };
+
+  const handleDeleteRecipe = (smoothieId: string) => {
+    const updatedSmoothies = savedSmoothies.filter(smoothie => smoothie.id !== smoothieId);
+    localStorage.setItem('savedSmoothies', JSON.stringify(updatedSmoothies));
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (
@@ -77,7 +95,10 @@ export const RecipeGalleries = ({ currentRecipes, savedRecipes }: RecipeGallerie
                 <div className={getGalleryClasses()}>
                   {currentRecipes.map((recipe, index) => (
                     <div key={index} className={galleryType === "carousel" ? "snap-center min-w-[300px]" : ""}>
-                      <RecipePreviewCard recipe={recipe} />
+                      <RecipePreviewCard 
+                        recipe={recipe} 
+                        onSave={() => handleSaveRecipe(recipe)}
+                      />
                     </div>
                   ))}
                 </div>
@@ -85,14 +106,23 @@ export const RecipeGalleries = ({ currentRecipes, savedRecipes }: RecipeGallerie
             </TabsContent>
 
             <TabsContent value="saved">
-              {savedRecipes.length === 0 ? (
+              {savedSmoothies.length === 0 ? (
                 <p className="text-center text-muted-foreground">No saved recipes yet.</p>
               ) : (
                 <div className={getGalleryClasses()}>
-                  {savedRecipes.map((recipe, index) => (
-                    <div key={index} className={galleryType === "carousel" ? "snap-center min-w-[300px]" : ""}>
-                      <RecipePreviewCard recipe={recipe} />
-                    </div>
+                  {savedSmoothies.map((smoothie) => (
+                    smoothie.recipes.map((recipe, recipeIndex) => (
+                      <div 
+                        key={`${smoothie.id}-${recipeIndex}`} 
+                        className={galleryType === "carousel" ? "snap-center min-w-[300px]" : ""}
+                      >
+                        <RecipePreviewCard 
+                          recipe={recipe}
+                          onDelete={() => handleDeleteRecipe(smoothie.id)}
+                          isSaved
+                        />
+                      </div>
+                    ))
                   ))}
                 </div>
               )}
