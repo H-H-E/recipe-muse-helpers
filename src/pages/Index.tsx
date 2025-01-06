@@ -1,43 +1,41 @@
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { generateSmoothieRecipes } from "@/services/openai";
-import { RecipeDisplay } from "@/components/RecipeDisplay";
-import { SmoothieLoader } from "@/components/SmoothieLoader";
 import { Header } from "@/components/Header";
 import { ApiKeyConfig } from "@/components/ApiKeyConfig";
-import { RecipeForm } from "@/components/RecipeForm";
 import { SavedSmoothies } from "@/components/SavedSmoothies";
-import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
-import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { RecipeSection } from "@/components/RecipeSection";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  const [ingredients, setIngredients] = useState("");
-  const [numIdeas, setNumIdeas] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [recipes, setRecipes] = useState([]);
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
-  const [strictMode, setStrictMode] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchApiKey = async () => {
       try {
-        const { data, error } = await supabase
+        const { data: apiKeyData, error: apiKeyError } = await supabase
           .from('api_keys')
           .select('key_value')
           .maybeSingle();
 
-        if (error) throw error;
-        
-        if (data) {
-          setIsKeyConfigured(true);
-        } else {
+        if (apiKeyError) {
+          console.error('Error fetching API key:', apiKeyError);
           setIsKeyConfigured(false);
+          return;
         }
+        
+        // Also check if the key exists in Supabase Edge Function secrets
+        const { data: { key }, error: secretError } = await supabase.functions.invoke('manage-openai-key', {
+          method: 'GET'
+        });
+
+        if (secretError || !key) {
+          console.error('Error fetching secret key:', secretError);
+          setIsKeyConfigured(false);
+          return;
+        }
+
+        setIsKeyConfigured(true);
       } catch (error) {
-        console.error('Error fetching API key:', error);
+        console.error('Error in API key verification:', error);
         setIsKeyConfigured(false);
       }
     };
@@ -45,39 +43,10 @@ const Index = () => {
     fetchApiKey();
   }, []);
 
-  const generateSmoothies = async () => {
-    setLoading(true);
-    try {
-      const response = await generateSmoothieRecipes(ingredients, numIdeas, strictMode);
-      setRecipes(response);
-      
-      toast({
-        title: "Success!",
-        description: `Generated ${numIdeas} smoothie recipe${numIdeas > 1 ? 's' : ''}!`,
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      if (error.message?.includes('API key')) {
-        setIsKeyConfigured(false);
-      }
-      toast({
-        title: "Error",
-        description: "Failed to generate smoothie recipes. Please check your API key and try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+  const handleApiError = (message: string) => {
+    if (message.includes('API key')) {
+      setIsKeyConfigured(false);
     }
-  };
-
-  const handleSaveRecipes = () => {
-    if (recipes.length === 0) return;
-    
-    saveSmoothieRecipes(recipes, ingredients);
-    toast({
-      title: "Success!",
-      description: "Recipes saved successfully!",
-    });
   };
 
   return (
@@ -88,34 +57,7 @@ const Index = () => {
         <ApiKeyConfig />
       ) : (
         <>
-          <RecipeForm 
-            ingredients={ingredients}
-            setIngredients={setIngredients}
-            numIdeas={numIdeas}
-            setNumIdeas={setNumIdeas}
-            strictMode={strictMode}
-            setStrictMode={setStrictMode}
-            onSubmit={generateSmoothies}
-            loading={loading}
-          />
-
-          {loading ? (
-            <SmoothieLoader />
-          ) : recipes.length > 0 && (
-            <div className="mt-6 space-y-4">
-              <div className="flex justify-end">
-                <Button
-                  onClick={handleSaveRecipes}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Recipes
-                </Button>
-              </div>
-              <RecipeDisplay recipes={recipes} />
-            </div>
-          )}
-
+          <RecipeSection onError={handleApiError} />
           <SavedSmoothies />
         </>
       )}
