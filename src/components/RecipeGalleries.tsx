@@ -26,7 +26,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   const getGalleryClasses = () => {
     switch (galleryType) {
       case "carousel":
-        return "flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory";
+        return "flex flex-col gap-6 pb-4";
       default:
         return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
     }
@@ -84,7 +84,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
             ) : (
               <div className={getGalleryClasses()}>
                 {currentRecipes.map((recipe, index) => (
-                  <div key={index} className={galleryType === "carousel" ? "snap-center min-w-[350px]" : ""}>
+                  <div key={index} className={galleryType === "carousel" ? "w-full" : ""}>
                     <RecipePreviewCard 
                       recipe={recipe} 
                       onSave={() => handleSaveRecipe(recipe)}
@@ -104,7 +104,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
                   smoothie.recipes.map((recipe, recipeIndex) => (
                     <div 
                       key={`${smoothie.id}-${recipeIndex}`} 
-                      className={galleryType === "carousel" ? "snap-center min-w-[350px]" : ""}
+                      className={galleryType === "carousel" ? "w-full" : ""}
                     >
                       <RecipePreviewCard 
                         recipe={recipe}
