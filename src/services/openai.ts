@@ -48,7 +48,7 @@ Follow these steps to create your smoothie ideas:
 Always return your response in valid JSON format with the exact structure shown in the example.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
       messages: [
         {

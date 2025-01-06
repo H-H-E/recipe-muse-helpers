@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,22 +11,11 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    )
-
     if (req.method === 'POST') {
       const { apiKey } = await req.json()
       
-      // Store the API key as a secret
-      const { error } = await supabaseClient
-        .rpc('set_secret', {
-          name: 'OPENAI_API_KEY',
-          value: apiKey
-        })
-
-      if (error) throw error
+      // Store the API key as a secret using Deno.env
+      Deno.env.set('OPENAI_API_KEY', apiKey)
 
       return new Response(
         JSON.stringify({ message: 'API key stored successfully' }),
@@ -35,17 +23,18 @@ serve(async (req) => {
       )
     }
 
-    // For GET requests, retrieve the API key
-    const { data, error } = await supabaseClient
-      .rpc('get_secret', { name: 'OPENAI_API_KEY' })
-
-    if (error) throw error
+    // For GET requests, retrieve the API key from environment
+    const apiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!apiKey) {
+      throw new Error('OpenAI API key not found')
+    }
 
     return new Response(
-      JSON.stringify({ key: data }),
+      JSON.stringify({ key: apiKey }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('Error in manage-openai-key function:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
