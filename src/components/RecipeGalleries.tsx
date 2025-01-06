@@ -1,17 +1,12 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RecipePreviewCard } from "./RecipePreviewCard";
-import { LayoutGrid, List } from "lucide-react";
-import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
+import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
 import { useToast } from "@/hooks/use-toast";
-
-interface Recipe {
-  name: string;
-  ingredients: string[];
-  instructions: string[];
-  nutritionalBenefits?: string[];
-}
+import { ViewToggle } from "./recipe-gallery/ViewToggle";
+import { CurrentRecipes } from "./recipe-gallery/CurrentRecipes";
+import { SavedRecipes } from "./recipe-gallery/SavedRecipes";
+import { Recipe } from "@/types/recipe";
 
 interface RecipeGalleriesProps {
   currentRecipes: Recipe[];
@@ -21,16 +16,6 @@ interface RecipeGalleriesProps {
 export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleriesProps) => {
   const [galleryType, setGalleryType] = useState<"grid" | "carousel">("grid");
   const { toast } = useToast();
-  const savedSmoothies = getSavedSmoothies();
-
-  const getGalleryClasses = () => {
-    switch (galleryType) {
-      case "carousel":
-        return "flex flex-col gap-6 pb-4";
-      default:
-        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
-    }
-  };
 
   const handleSaveRecipe = (recipe: Recipe) => {
     saveSmoothieRecipes([recipe], ingredients);
@@ -41,6 +26,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   };
 
   const handleDeleteRecipe = (smoothieId: string) => {
+    const savedSmoothies = getSavedSmoothies();
     const updatedSmoothies = savedSmoothies.filter(smoothie => smoothie.id !== smoothieId);
     localStorage.setItem('savedSmoothies', JSON.stringify(updatedSmoothies));
     window.dispatchEvent(new Event('storage'));
@@ -55,68 +41,19 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
             <TabsTrigger value="saved" className="text-base">Saved Recipes</TabsTrigger>
           </TabsList>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setGalleryType("grid")}
-              className={`p-2 rounded-md transition-colors ${
-                galleryType === "grid" ? "bg-purple-100 dark:bg-purple-900" : ""
-              }`}
-              title="Grid View"
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setGalleryType("carousel")}
-              className={`p-2 rounded-md transition-colors ${
-                galleryType === "carousel" ? "bg-purple-100 dark:bg-purple-900" : ""
-              }`}
-              title="List View"
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
+          <ViewToggle galleryType={galleryType} onViewChange={setGalleryType} />
         </div>
 
         <ScrollArea className="h-[600px]">
-          <TabsContent value="current">
-            {currentRecipes.length === 0 ? (
-              <p className="text-center text-muted-foreground">No recipes generated in this session yet.</p>
-            ) : (
-              <div className={getGalleryClasses()}>
-                {currentRecipes.map((recipe, index) => (
-                  <div key={index} className={galleryType === "carousel" ? "w-full" : ""}>
-                    <RecipePreviewCard 
-                      recipe={recipe} 
-                      onSave={() => handleSaveRecipe(recipe)}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="saved">
-            {savedSmoothies.length === 0 ? (
-              <p className="text-center text-muted-foreground">No saved recipes yet.</p>
-            ) : (
-              <div className={getGalleryClasses()}>
-                {savedSmoothies.map((smoothie) => (
-                  smoothie.recipes.map((recipe, recipeIndex) => (
-                    <div 
-                      key={`${smoothie.id}-${recipeIndex}`} 
-                      className={galleryType === "carousel" ? "w-full" : ""}
-                    >
-                      <RecipePreviewCard 
-                        recipe={recipe}
-                        onDelete={() => handleDeleteRecipe(smoothie.id)}
-                        isSaved
-                      />
-                    </div>
-                  ))
-                ))}
-              </div>
-            )}
-          </TabsContent>
+          <CurrentRecipes
+            recipes={currentRecipes}
+            galleryType={galleryType}
+            onSave={handleSaveRecipe}
+          />
+          <SavedRecipes
+            galleryType={galleryType}
+            onDelete={handleDeleteRecipe}
+          />
         </ScrollArea>
       </Tabs>
     </div>
