@@ -11,18 +11,6 @@ serve(async (req) => {
   }
 
   try {
-    if (req.method === 'POST') {
-      const { apiKey } = await req.json()
-      
-      // Store the API key as a secret using Deno.env
-      Deno.env.set('OPENAI_API_KEY', apiKey)
-
-      return new Response(
-        JSON.stringify({ message: 'API key stored successfully' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
     // For GET requests, retrieve the API key from environment
     const apiKey = Deno.env.get('OPENAI_API_KEY')
     if (!apiKey) {
