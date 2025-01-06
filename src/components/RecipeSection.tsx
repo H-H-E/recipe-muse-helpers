@@ -3,7 +3,7 @@ import { RecipeForm } from "./RecipeForm";
 import { RecipeDisplay } from "./RecipeDisplay";
 import { SmoothieLoader } from "./SmoothieLoader";
 import { RecipeGalleries } from "./RecipeGalleries";
-import { generateRecipes } from "@/services/openai";
+import { generateSmoothieRecipes } from "@/services/openai";
 
 interface Recipe {
   name: string;
@@ -20,18 +20,15 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
   const [ingredients, setIngredients] = useState("");
+  const [numIdeas, setNumIdeas] = useState(1);
+  const [strictMode, setStrictMode] = useState(false);
 
-  const handleSubmit = async (
-    ingredients: string,
-    numberOfRecipes: number,
-    strictMode: boolean
-  ) => {
+  const handleSubmit = async () => {
     setLoading(true);
-    setIngredients(ingredients);
     try {
-      const generatedRecipes = await generateRecipes(
+      const generatedRecipes = await generateSmoothieRecipes(
         ingredients,
-        numberOfRecipes,
+        numIdeas,
         strictMode
       );
       setRecipes(generatedRecipes);
@@ -47,7 +44,16 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
 
   return (
     <div className="space-y-8">
-      <RecipeForm onSubmit={handleSubmit} />
+      <RecipeForm 
+        ingredients={ingredients}
+        setIngredients={setIngredients}
+        numIdeas={numIdeas}
+        setNumIdeas={setNumIdeas}
+        strictMode={strictMode}
+        setStrictMode={setStrictMode}
+        onSubmit={handleSubmit}
+        loading={loading}
+      />
       
       {loading ? (
         <SmoothieLoader />
