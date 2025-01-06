@@ -1,42 +1,45 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { generateSmoothieRecipes } from "@/services/openai";
-import { SmoothieLoader } from "@/components/SmoothieLoader";
-import { RecipeForm } from "@/components/RecipeForm";
-import { RecipeGalleries } from "@/components/RecipeGalleries";
+import { RecipeForm } from "./RecipeForm";
+import { RecipeDisplay } from "./RecipeDisplay";
+import { SmoothieLoader } from "./SmoothieLoader";
+import { RecipeGalleries } from "./RecipeGalleries";
+import { generateRecipes } from "@/services/openai";
+
+interface Recipe {
+  name: string;
+  ingredients: string[];
+  instructions: string[];
+  nutritionalBenefits?: string[];
+}
 
 interface RecipeSectionProps {
   onError: (message: string) => void;
 }
 
 export const RecipeSection = ({ onError }: RecipeSectionProps) => {
-  const [ingredients, setIngredients] = useState("");
-  const [numIdeas, setNumIdeas] = useState(1);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
-  const [recipes, setRecipes] = useState([]);
-  const [strictMode, setStrictMode] = useState(false);
-  const { toast } = useToast();
+  const [ingredients, setIngredients] = useState("");
 
-  const generateSmoothies = async () => {
+  const handleSubmit = async (
+    ingredients: string,
+    numberOfRecipes: number,
+    strictMode: boolean
+  ) => {
     setLoading(true);
+    setIngredients(ingredients);
     try {
-      const response = await generateSmoothieRecipes(ingredients, numIdeas, strictMode);
-      setRecipes(response);
-      
-      toast({
-        title: "Success!",
-        description: `Generated ${numIdeas} smoothie recipe${numIdeas > 1 ? 's' : ''}!`,
-      });
+      const generatedRecipes = await generateRecipes(
+        ingredients,
+        numberOfRecipes,
+        strictMode
+      );
+      setRecipes(generatedRecipes);
     } catch (error) {
-      console.error('Error:', error);
-      if (error.message?.includes('API key')) {
+      console.error("Error generating recipes:", error);
+      if (error instanceof Error) {
         onError(error.message);
       }
-      toast({
-        title: "Error",
-        description: "Failed to generate smoothie recipes. Please check your API key and try again.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
@@ -44,17 +47,8 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
 
   return (
     <div className="space-y-8">
-      <RecipeForm 
-        ingredients={ingredients}
-        setIngredients={setIngredients}
-        numIdeas={numIdeas}
-        setNumIdeas={setNumIdeas}
-        strictMode={strictMode}
-        setStrictMode={setStrictMode}
-        onSubmit={generateSmoothies}
-        loading={loading}
-      />
-
+      <RecipeForm onSubmit={handleSubmit} />
+      
       {loading ? (
         <SmoothieLoader />
       ) : (
