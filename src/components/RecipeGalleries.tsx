@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RecipePreviewCard } from "./RecipePreviewCard";
-import { GalleryHorizontal, GalleryThumbnails } from "lucide-react";
+import { LayoutGrid, List } from "lucide-react";
 import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
 import { useToast } from "@/hooks/use-toast";
 
@@ -26,9 +26,9 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   const getGalleryClasses = () => {
     switch (galleryType) {
       case "carousel":
-        return "flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory";
+        return "flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory";
       default:
-        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
     }
   };
 
@@ -48,14 +48,14 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <Tabs defaultValue="current" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="current">Current Session</TabsTrigger>
-            <TabsTrigger value="saved">Saved Recipes</TabsTrigger>
+      <Tabs defaultValue="current" className="w-full">
+        <div className="flex justify-between items-center mb-6">
+          <TabsList className="grid w-[400px] grid-cols-2">
+            <TabsTrigger value="current" className="text-base">Current Session</TabsTrigger>
+            <TabsTrigger value="saved" className="text-base">Saved Recipes</TabsTrigger>
           </TabsList>
 
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex gap-2">
             <button
               onClick={() => setGalleryType("grid")}
               className={`p-2 rounded-md transition-colors ${
@@ -63,62 +63,62 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
               }`}
               title="Grid View"
             >
-              <GalleryThumbnails className="w-5 h-5" />
+              <LayoutGrid className="w-5 h-5" />
             </button>
             <button
               onClick={() => setGalleryType("carousel")}
               className={`p-2 rounded-md transition-colors ${
                 galleryType === "carousel" ? "bg-purple-100 dark:bg-purple-900" : ""
               }`}
-              title="Carousel View"
+              title="List View"
             >
-              <GalleryHorizontal className="w-5 h-5" />
+              <List className="w-5 h-5" />
             </button>
           </div>
+        </div>
 
-          <ScrollArea className="h-[600px] mt-4">
-            <TabsContent value="current">
-              {currentRecipes.length === 0 ? (
-                <p className="text-center text-muted-foreground">No recipes generated in this session yet.</p>
-              ) : (
-                <div className={getGalleryClasses()}>
-                  {currentRecipes.map((recipe, index) => (
-                    <div key={index} className={galleryType === "carousel" ? "snap-center min-w-[300px]" : ""}>
+        <ScrollArea className="h-[600px]">
+          <TabsContent value="current">
+            {currentRecipes.length === 0 ? (
+              <p className="text-center text-muted-foreground">No recipes generated in this session yet.</p>
+            ) : (
+              <div className={getGalleryClasses()}>
+                {currentRecipes.map((recipe, index) => (
+                  <div key={index} className={galleryType === "carousel" ? "snap-center min-w-[350px]" : ""}>
+                    <RecipePreviewCard 
+                      recipe={recipe} 
+                      onSave={() => handleSaveRecipe(recipe)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="saved">
+            {savedSmoothies.length === 0 ? (
+              <p className="text-center text-muted-foreground">No saved recipes yet.</p>
+            ) : (
+              <div className={getGalleryClasses()}>
+                {savedSmoothies.map((smoothie) => (
+                  smoothie.recipes.map((recipe, recipeIndex) => (
+                    <div 
+                      key={`${smoothie.id}-${recipeIndex}`} 
+                      className={galleryType === "carousel" ? "snap-center min-w-[350px]" : ""}
+                    >
                       <RecipePreviewCard 
-                        recipe={recipe} 
-                        onSave={() => handleSaveRecipe(recipe)}
+                        recipe={recipe}
+                        onDelete={() => handleDeleteRecipe(smoothie.id)}
+                        isSaved
                       />
                     </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="saved">
-              {savedSmoothies.length === 0 ? (
-                <p className="text-center text-muted-foreground">No saved recipes yet.</p>
-              ) : (
-                <div className={getGalleryClasses()}>
-                  {savedSmoothies.map((smoothie) => (
-                    smoothie.recipes.map((recipe, recipeIndex) => (
-                      <div 
-                        key={`${smoothie.id}-${recipeIndex}`} 
-                        className={galleryType === "carousel" ? "snap-center min-w-[300px]" : ""}
-                      >
-                        <RecipePreviewCard 
-                          recipe={recipe}
-                          onDelete={() => handleDeleteRecipe(smoothie.id)}
-                          isSaved
-                        />
-                      </div>
-                    ))
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-          </ScrollArea>
-        </Tabs>
-      </div>
+                  ))
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </ScrollArea>
+      </Tabs>
     </div>
   );
 };

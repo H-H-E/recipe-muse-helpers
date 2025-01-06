@@ -27,7 +27,6 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
     e.stopPropagation();
     if (onSave) {
       onSave();
-      // Create flying paper animation
       const button = e.currentTarget;
       const rect = button.getBoundingClientRect();
       const paper = document.createElement('div');
@@ -59,10 +58,10 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 animate-fade-in">
-          <CardContent className="p-4 space-y-4">
+        <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-white dark:from-gray-900 dark:to-gray-800 animate-fade-in border-none shadow-sm">
+          <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-start">
-              <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-300">
+              <h3 className="text-xl font-semibold text-purple-600 dark:text-purple-300">
                 {recipe.name}
               </h3>
               <div className="flex gap-2">
@@ -88,8 +87,8 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                 )}
               </div>
             </div>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="space-y-3">
+              <p className="text-sm text-purple-500 dark:text-purple-400 font-medium">
                 {recipe.ingredients.length} ingredients
               </p>
               <div className="flex flex-wrap gap-2">
@@ -97,13 +96,16 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                   <Badge 
                     key={idx}
                     variant="secondary" 
-                    className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100 transition-all hover:scale-105"
+                    className="bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-200 border-none transition-all hover:scale-105 px-3 py-1"
                   >
                     {ingredient.split(',')[0]}
                   </Badge>
                 ))}
                 {recipe.ingredients.length > 3 && (
-                  <Badge variant="outline" className="transition-all hover:scale-105">
+                  <Badge 
+                    variant="outline" 
+                    className="transition-all hover:scale-105 border-purple-200 text-purple-600 dark:border-purple-700 dark:text-purple-300"
+                  >
                     +{recipe.ingredients.length - 3} more
                   </Badge>
                 )}
