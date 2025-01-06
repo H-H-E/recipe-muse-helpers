@@ -45,7 +45,6 @@ export const IngredientShortcuts = ({ onIngredientClick }: IngredientShortcutsPr
       behavior: 'smooth'
     });
 
-    // Update arrow visibility after scroll
     setTimeout(() => {
       if (!container) return;
       setShowLeftArrow(container.scrollLeft > 0);
