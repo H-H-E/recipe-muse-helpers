@@ -17,7 +17,6 @@ const Index = () => {
   const [numIdeas, setNumIdeas] = useState(1);
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
-  const [apiKey, setApiKey] = useState("");
   const [isKeyConfigured, setIsKeyConfigured] = useState(false);
   const [strictMode, setStrictMode] = useState(false);
   const { toast } = useToast();
@@ -33,7 +32,6 @@ const Index = () => {
         if (error) throw error;
         
         if (data) {
-          setApiKey(data.key_value);
           setIsKeyConfigured(true);
         } else {
           setIsKeyConfigured(false);
@@ -87,11 +85,7 @@ const Index = () => {
       <Header />
       
       {!isKeyConfigured ? (
-        <ApiKeyConfig 
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          setIsKeyConfigured={setIsKeyConfigured}
-        />
+        <ApiKeyConfig />
       ) : (
         <>
           <RecipeForm 
