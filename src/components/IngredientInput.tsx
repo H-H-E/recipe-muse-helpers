@@ -12,18 +12,51 @@ interface IngredientInputProps {
 }
 
 const COMMON_INGREDIENTS = [
+  // Fruits
   "Banana",
   "Mango",
   "Strawberry",
   "Blueberry",
+  "Raspberry",
+  "Blackberry",
+  "Pineapple",
+  "Peach",
+  "Apple",
+  "Orange",
+  "Kiwi",
+  "Papaya",
+  "Watermelon",
+  // Greens & Vegetables
   "Spinach",
   "Kale",
+  "Celery",
+  "Cucumber",
+  "Carrot",
+  "Beet",
+  "Ginger",
+  // Dairy & Alternatives
   "Greek Yogurt",
   "Almond Milk",
+  "Oat Milk",
+  "Coconut Milk",
+  "Soy Milk",
+  // Protein & Supplements
   "Protein Powder",
+  "Collagen Powder",
+  "Hemp Seeds",
   "Chia Seeds",
+  "Flax Seeds",
+  // Sweeteners & Add-ins
   "Honey",
-  "Peanut Butter"
+  "Maple Syrup",
+  "Dates",
+  "Peanut Butter",
+  "Almond Butter",
+  "Cocoa Powder",
+  "Cinnamon",
+  "Turmeric",
+  "Matcha Powder",
+  "Spirulina"
 ];
 
 export const IngredientInput = ({
@@ -95,7 +128,7 @@ export const IngredientInput = ({
             Select Common Ingredients
           </AccordionTrigger>
           <AccordionContent className="px-4 py-2">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[400px] overflow-y-auto pr-2">
               {COMMON_INGREDIENTS.map((ingredient) => (
                 <div key={ingredient} className="flex items-center space-x-2 py-1">
                   <Checkbox
