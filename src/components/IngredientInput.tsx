@@ -63,18 +63,19 @@ export const IngredientInput = ({
       
       {ingredients && (
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="checklist">
-            <AccordionTrigger className="text-sm">
+          <AccordionItem value="checklist" className="border-b border-gray-200 dark:border-gray-700">
+            <AccordionTrigger className="text-sm py-2 hover:no-underline hover:bg-gray-50 dark:hover:bg-gray-800 px-4 rounded-lg transition-colors">
               Ingredient Checklist
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="px-4 py-2">
               <div className="space-y-2">
                 {Object.keys(checkedIngredients).map((ingredient) => (
-                  <div key={ingredient} className="flex items-center space-x-2">
+                  <div key={ingredient} className="flex items-center space-x-2 py-1">
                     <Checkbox
                       id={`check-${ingredient}`}
                       checked={checkedIngredients[ingredient]}
                       onCheckedChange={(checked) => handleCheckChange(ingredient, checked as boolean)}
+                      className="data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                     />
                     <label
                       htmlFor={`check-${ingredient}`}
