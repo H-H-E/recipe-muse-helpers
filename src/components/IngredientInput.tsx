@@ -11,12 +11,28 @@ interface IngredientInputProps {
   onIngredientClick: (ingredient: string) => void;
 }
 
+const COMMON_INGREDIENTS = [
+  "Banana",
+  "Mango",
+  "Strawberry",
+  "Blueberry",
+  "Spinach",
+  "Kale",
+  "Greek Yogurt",
+  "Almond Milk",
+  "Protein Powder",
+  "Chia Seeds",
+  "Honey",
+  "Peanut Butter"
+];
+
 export const IngredientInput = ({
   ingredients,
   setIngredients,
   onIngredientClick
 }: IngredientInputProps) => {
   const [checkedIngredients, setCheckedIngredients] = useState<{ [key: string]: boolean }>({});
+  const [selectedIngredients, setSelectedIngredients] = useState<{ [key: string]: boolean }>({});
 
   // Parse ingredients string into array and update checklist
   useEffect(() => {
@@ -49,10 +65,60 @@ export const IngredientInput = ({
     }));
   };
 
+  const handleIngredientSelect = (ingredient: string, checked: boolean) => {
+    setSelectedIngredients(prev => ({
+      ...prev,
+      [ingredient]: checked
+    }));
+
+    const currentIngredients = ingredients
+      .split(',')
+      .map(i => i.trim())
+      .filter(i => i !== '');
+
+    if (checked && !currentIngredients.includes(ingredient)) {
+      const newIngredients = [...currentIngredients, ingredient];
+      setIngredients(newIngredients.join(', '));
+    } else if (!checked) {
+      const newIngredients = currentIngredients.filter(i => i !== ingredient);
+      setIngredients(newIngredients.join(', '));
+    }
+  };
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <Label htmlFor="ingredients" className="text-lg font-semibold">Your Ingredients</Label>
+      
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="ingredients" className="border-b border-gray-200 dark:border-gray-700">
+          <AccordionTrigger className="text-sm py-2 hover:no-underline hover:bg-gray-50 dark:hover:bg-gray-800 px-4 rounded-lg transition-colors">
+            Select Common Ingredients
+          </AccordionTrigger>
+          <AccordionContent className="px-4 py-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {COMMON_INGREDIENTS.map((ingredient) => (
+                <div key={ingredient} className="flex items-center space-x-2 py-1">
+                  <Checkbox
+                    id={`select-${ingredient}`}
+                    checked={selectedIngredients[ingredient]}
+                    onCheckedChange={(checked) => handleIngredientSelect(ingredient, checked as boolean)}
+                    className="data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                  />
+                  <label
+                    htmlFor={`select-${ingredient}`}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {ingredient}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
       <IngredientShortcuts onIngredientClick={onIngredientClick} />
+      
       <Textarea
         id="ingredients"
         placeholder="Enter ingredients (e.g., mango, berries, spinach)"
