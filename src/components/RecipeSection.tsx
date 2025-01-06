@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { generateSmoothieRecipes } from "@/services/openai";
-import { RecipeDisplay } from "@/components/RecipeDisplay";
 import { SmoothieLoader } from "@/components/SmoothieLoader";
 import { RecipeForm } from "@/components/RecipeForm";
-import { saveSmoothieRecipes } from "@/utils/smoothieStorage";
+import { saveSmoothieRecipes, getSavedSmoothies } from "@/utils/smoothieStorage";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
+import { RecipeGalleries } from "@/components/RecipeGalleries";
 
 interface RecipeSectionProps {
   onError: (message: string) => void;
@@ -56,7 +56,7 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
   };
 
   return (
-    <>
+    <div className="space-y-8">
       <RecipeForm 
         ingredients={ingredients}
         setIngredients={setIngredients}
@@ -71,7 +71,7 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
       {loading ? (
         <SmoothieLoader />
       ) : recipes.length > 0 && (
-        <div className="mt-6 space-y-4">
+        <div className="space-y-4">
           <div className="flex justify-end">
             <Button
               onClick={handleSaveRecipes}
@@ -81,9 +81,12 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
               Save Recipes
             </Button>
           </div>
-          <RecipeDisplay recipes={recipes} />
+          <RecipeGalleries 
+            currentRecipes={recipes} 
+            savedRecipes={getSavedSmoothies().flatMap(smoothie => smoothie.recipes)} 
+          />
         </div>
       )}
-    </>
+    </div>
   );
 };
