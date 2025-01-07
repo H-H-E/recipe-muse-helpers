@@ -58,10 +58,10 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-white dark:from-gray-900 dark:to-gray-800 animate-fade-in border-none shadow-sm">
+        <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-gradient-to-br from-secondary/50 to-primary/10 dark:from-secondary/20 dark:to-primary/5 animate-fade-in border-none shadow-sm">
           <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-start">
-              <h3 className="text-xl font-semibold text-purple-600 dark:text-purple-300">
+              <h3 className="text-xl font-semibold text-primary dark:text-primary">
                 {recipe.name}
               </h3>
               <div className="flex gap-2">
@@ -70,7 +70,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                     variant="ghost"
                     size="icon"
                     onClick={handleSave}
-                    className="h-8 w-8 transition-transform active:scale-90"
+                    className="h-8 w-8 transition-transform active:scale-90 hover:text-primary"
                   >
                     <Save className="h-4 w-4" />
                   </Button>
@@ -80,7 +80,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                     variant="ghost"
                     size="icon"
                     onClick={handleDelete}
-                    className="h-8 w-8 text-red-500 hover:text-red-600 transition-transform active:scale-90"
+                    className="h-8 w-8 text-destructive hover:text-destructive/80 transition-transform active:scale-90"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -88,7 +88,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-sm text-purple-500 dark:text-purple-400 font-medium">
+              <p className="text-sm text-primary/80 dark:text-primary/80 font-medium">
                 {recipe.ingredients.length} ingredients
               </p>
               <div className="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                   <Badge 
                     key={idx}
                     variant="secondary" 
-                    className="bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-200 border-none transition-all hover:scale-105 px-3 py-1"
+                    className="bg-secondary/80 text-primary dark:bg-secondary dark:text-primary border-none transition-all hover:scale-105 px-3 py-1"
                   >
                     {ingredient.split(',')[0]}
                   </Badge>
@@ -104,7 +104,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                 {recipe.ingredients.length > 3 && (
                   <Badge 
                     variant="outline" 
-                    className="transition-all hover:scale-105 border-purple-200 text-purple-600 dark:border-purple-700 dark:text-purple-300"
+                    className="transition-all hover:scale-105 border-primary/20 text-primary/80 dark:border-primary/20 dark:text-primary/80"
                   >
                     +{recipe.ingredients.length - 3} more
                   </Badge>
