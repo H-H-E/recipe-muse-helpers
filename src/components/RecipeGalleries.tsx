@@ -33,27 +33,29 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Tabs defaultValue="current" className="w-full">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4">
           <TabsList className="grid w-[400px] grid-cols-2">
-            <TabsTrigger value="current" className="text-base">Current Session</TabsTrigger>
-            <TabsTrigger value="saved" className="text-base">Saved Recipes</TabsTrigger>
+            <TabsTrigger value="current" className="text-base py-3">Current Session</TabsTrigger>
+            <TabsTrigger value="saved" className="text-base py-3">Saved Recipes</TabsTrigger>
           </TabsList>
 
           <ViewToggle galleryType={galleryType} onViewChange={setGalleryType} />
         </div>
 
-        <ScrollArea className="h-[600px]">
-          <CurrentRecipes
-            recipes={currentRecipes}
-            galleryType={galleryType}
-            onSave={handleSaveRecipe}
-          />
-          <SavedRecipes
-            galleryType={galleryType}
-            onDelete={handleDeleteRecipe}
-          />
+        <ScrollArea className="h-[600px] px-1">
+          <div className="py-4">
+            <CurrentRecipes
+              recipes={currentRecipes}
+              galleryType={galleryType}
+              onSave={handleSaveRecipe}
+            />
+            <SavedRecipes
+              galleryType={galleryType}
+              onDelete={handleDeleteRecipe}
+            />
+          </div>
         </ScrollArea>
       </Tabs>
     </div>
