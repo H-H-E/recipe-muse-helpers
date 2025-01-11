@@ -57,8 +57,8 @@ export const RecipeForm = ({
   };
 
   return (
-    <Card className="max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 border-2 border-purple-100 dark:border-purple-900">
-      <CardContent className="space-y-6 pt-6">
+    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 border-2 border-purple-100 dark:border-purple-900">
+      <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <IngredientInput 
           ingredients={ingredients}
           setIngredients={setIngredients}
