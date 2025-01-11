@@ -38,7 +38,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
     <div className="space-y-8">
       <Tabs defaultValue="current" className="w-full">
         <div className={`flex ${isMobile ? 'flex-col' : 'justify-between'} items-center gap-4 mb-4`}>
-          <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+          <TabsList className="grid w-full sm:max-w-[400px] grid-cols-2">
             <TabsTrigger value="current" className="text-base py-3">Current Session</TabsTrigger>
             <TabsTrigger value="saved" className="text-base py-3">Saved Recipes</TabsTrigger>
           </TabsList>
@@ -46,7 +46,7 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
           <ViewToggle galleryType={galleryType} onViewChange={setGalleryType} />
         </div>
 
-        <ScrollArea className="h-[600px] px-1">
+        <ScrollArea className="h-[600px] px-4">
           <div className="py-4">
             <CurrentRecipes
               recipes={currentRecipes}

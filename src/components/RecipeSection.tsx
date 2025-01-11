@@ -26,16 +26,20 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      console.log("Generating recipes with:", { ingredients, numIdeas, strictMode });
       const generatedRecipes = await generateSmoothieRecipes(
         ingredients,
         numIdeas,
         strictMode
       );
+      console.log("Generated recipes:", generatedRecipes);
       setRecipes(generatedRecipes);
     } catch (error) {
       console.error("Error generating recipes:", error);
       if (error instanceof Error) {
         onError(error.message);
+      } else {
+        onError("An unexpected error occurred while generating recipes");
       }
     } finally {
       setLoading(false);
