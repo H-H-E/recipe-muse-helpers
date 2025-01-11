@@ -37,16 +37,18 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   return (
     <div className="space-y-8">
       <Tabs defaultValue="current" className="w-full">
-        <div className={`flex ${isMobile ? 'flex-col' : 'justify-between'} items-center gap-4 mb-4`}>
-          <TabsList className="grid w-full sm:max-w-[400px] grid-cols-2">
-            <TabsTrigger value="current" className="text-base py-3">Current Session</TabsTrigger>
-            <TabsTrigger value="saved" className="text-base py-3">Saved Recipes</TabsTrigger>
+        <div className="flex flex-col gap-4 mb-4">
+          <TabsList className="w-full h-auto p-1">
+            <TabsTrigger value="current" className="text-base py-3 flex-1">Current Session</TabsTrigger>
+            <TabsTrigger value="saved" className="text-base py-3 flex-1">Saved Recipes</TabsTrigger>
           </TabsList>
 
-          <ViewToggle galleryType={galleryType} onViewChange={setGalleryType} />
+          <div className="flex justify-end">
+            <ViewToggle galleryType={galleryType} onViewChange={setGalleryType} />
+          </div>
         </div>
 
-        <ScrollArea className="h-[600px] px-4">
+        <ScrollArea className="h-[calc(100vh-300px)] px-2 sm:px-4">
           <div className="py-4">
             <CurrentRecipes
               recipes={currentRecipes}

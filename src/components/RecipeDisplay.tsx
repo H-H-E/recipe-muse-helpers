@@ -17,21 +17,21 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
   if (!recipes?.length) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {recipes.map((recipe, index) => (
         <Card key={index} className="overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 border-2">
-          <div className="p-6 space-y-6">
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Recipe Header */}
             <div className="border-b pb-4">
-              <h3 className="text-2xl font-bold text-purple-800 dark:text-purple-300 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-purple-800 dark:text-purple-300 mb-2">
                 {recipe.name}
               </h3>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-6">
               {/* Ingredients Section */}
               <div className="space-y-3">
-                <h4 className="text-lg font-semibold flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                <h4 className="text-base sm:text-lg font-semibold flex items-center gap-2 text-gray-700 dark:text-gray-200">
                   <span className="inline-block w-2 h-2 bg-purple-500 rounded-full"></span>
                   Ingredients
                 </h4>
@@ -40,7 +40,7 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
                     {recipe.ingredients.map((ingredient, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <span className="text-purple-600 dark:text-purple-400">•</span>
-                        <span className="text-gray-700 dark:text-gray-300">{ingredient}</span>
+                        <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">{ingredient}</span>
                       </li>
                     ))}
                   </ul>
@@ -49,7 +49,7 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
 
               {/* Instructions Section */}
               <div className="space-y-3">
-                <h4 className="text-lg font-semibold flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                <h4 className="text-base sm:text-lg font-semibold flex items-center gap-2 text-gray-700 dark:text-gray-200">
                   <span className="inline-block w-2 h-2 bg-blue-500 rounded-full"></span>
                   Instructions
                 </h4>
@@ -57,10 +57,10 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
                   <ol className="space-y-2">
                     {recipe.instructions.map((instruction, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-blue-600 dark:text-blue-400 font-medium min-w-[20px]">
+                        <span className="text-blue-600 dark:text-blue-400 font-medium min-w-[20px] text-sm sm:text-base">
                           {idx + 1}.
                         </span>
-                        <span className="text-gray-700 dark:text-gray-300">{instruction}</span>
+                        <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">{instruction}</span>
                       </li>
                     ))}
                   </ol>
@@ -71,7 +71,7 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
             {/* Nutritional Benefits Section */}
             {recipe.nutritionalBenefits && (
               <div className="pt-4 border-t">
-                <h4 className="text-lg font-semibold flex items-center gap-2 mb-3 text-gray-700 dark:text-gray-200">
+                <h4 className="text-base sm:text-lg font-semibold flex items-center gap-2 mb-3 text-gray-700 dark:text-gray-200">
                   <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                   Nutritional Benefits
                 </h4>
@@ -80,7 +80,7 @@ export const RecipeDisplay = ({ recipes }: RecipeDisplayProps) => {
                     <Badge 
                       key={idx} 
                       variant="secondary"
-                      className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                      className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 text-xs sm:text-sm"
                     >
                       {benefit}
                     </Badge>

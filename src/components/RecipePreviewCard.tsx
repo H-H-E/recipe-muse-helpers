@@ -59,12 +59,12 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
     <Dialog>
       <DialogTrigger asChild>
         <Card className="cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-gradient-to-br from-secondary/50 to-primary/10 dark:from-secondary/20 dark:to-primary/5 animate-fade-in border-none shadow-sm">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex justify-between items-start">
-              <h3 className="text-xl font-semibold text-primary dark:text-primary">
+          <CardContent className="p-4 sm:p-6 space-y-4">
+            <div className="flex justify-between items-start gap-2">
+              <h3 className="text-base sm:text-xl font-semibold text-primary dark:text-primary line-clamp-2">
                 {recipe.name}
               </h3>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-shrink-0">
                 {!isSaved && onSave && (
                   <Button
                     variant="ghost"
@@ -88,7 +88,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-sm text-primary/80 dark:text-primary/80 font-medium">
+              <p className="text-xs sm:text-sm text-primary/80 dark:text-primary/80 font-medium">
                 {recipe.ingredients.length} ingredients
               </p>
               <div className="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                   <Badge 
                     key={idx}
                     variant="secondary" 
-                    className="bg-secondary/80 text-primary dark:bg-secondary dark:text-primary border-none transition-all hover:scale-105 px-3 py-1"
+                    className="bg-secondary/80 text-primary dark:bg-secondary dark:text-primary border-none transition-all hover:scale-105 px-2 py-0.5 text-xs sm:px-3 sm:py-1 sm:text-sm"
                   >
                     {ingredient.split(',')[0]}
                   </Badge>
@@ -104,7 +104,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
                 {recipe.ingredients.length > 3 && (
                   <Badge 
                     variant="outline" 
-                    className="transition-all hover:scale-105 border-primary/20 text-primary/80 dark:border-primary/20 dark:text-primary/80"
+                    className="transition-all hover:scale-105 border-primary/20 text-primary/80 dark:border-primary/20 dark:text-primary/80 text-xs sm:text-sm"
                   >
                     +{recipe.ingredients.length - 3} more
                   </Badge>
@@ -114,7 +114,7 @@ export const RecipePreviewCard = ({ recipe, onSave, onDelete, isSaved }: RecipeP
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <RecipeDisplay recipes={[recipe]} />
       </DialogContent>
     </Dialog>

@@ -47,8 +47,8 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
   };
 
   return (
-    <div className="grid lg:grid-cols-[400px,1fr] gap-8 items-start">
-      <div className="lg:sticky lg:top-8">
+    <div className="flex flex-col lg:grid lg:grid-cols-[400px,1fr] gap-8">
+      <div className="lg:sticky lg:top-8 w-full">
         <RecipeForm 
           ingredients={ingredients}
           setIngredients={setIngredients}
@@ -61,7 +61,7 @@ export const RecipeSection = ({ onError }: RecipeSectionProps) => {
         />
       </div>
       
-      <div className="space-y-8">
+      <div className="space-y-8 w-full">
         {loading ? (
           <SmoothieLoader />
         ) : (
