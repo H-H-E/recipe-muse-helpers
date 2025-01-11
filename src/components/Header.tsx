@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Header = () => {
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [showShortTitle, setShowShortTitle] = useState(false);
+  const [showGooeyText, setShowGooeyText] = useState(false);
 
   useEffect(() => {
     if (showSubtitle) {
@@ -45,6 +46,10 @@ export const Header = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ duration: 0.5 }}
+              className="cursor-pointer"
+              onHoverStart={() => setShowGooeyText(true)}
+              onHoverEnd={() => setShowGooeyText(false)}
+              onClick={() => setShowGooeyText(!showGooeyText)}
             >
               <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 PP
@@ -54,10 +59,11 @@ export const Header = () => {
         </AnimatePresence>
       </div>
       <AnimatePresence>
-        {showSubtitle && (
+        {showSubtitle && showGooeyText && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
             className="h-24 flex items-center justify-center"
           >
