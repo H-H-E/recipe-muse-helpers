@@ -1,8 +1,6 @@
-import { Beaker } from "lucide-react";
 import { useState, useEffect } from "react";
-import { SparklesText } from "./SparklesText";
-import { GooeyText } from "./GooeyText";
 import { motion, AnimatePresence } from "framer-motion";
+import { GooeyText } from "./GooeyText";
 
 export const Header = () => {
   const [showSubtitle, setShowSubtitle] = useState(false);
@@ -18,38 +16,41 @@ export const Header = () => {
     }
   }, [showSubtitle]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSubtitle(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <header className="mb-12">
-      <div className="flex items-center justify-center gap-3 mb-6">
-        <AnimatePresence>
-          {showSubtitle && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Beaker className="w-12 h-12 text-primary animate-pulse" />
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <div className="space-y-4 text-center py-8">
+      <div className="relative h-24 flex items-center justify-center">
         <AnimatePresence mode="wait">
-          {!showShortTitle ? (
-            <SparklesText
-              key="full-title"
-              words="Pulp Picker"
-              onAnimationComplete={() => setShowSubtitle(true)}
-            />
-          ) : (
+          {!showShortTitle && (
             <motion.div
-              key="short-title"
+              key="fullTitle"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ duration: 0.5 }}
-              className="cursor-pointer"
+            >
+              <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Pulp Picker
+              </h1>
+            </motion.div>
+          )}
+          {showShortTitle && (
+            <motion.div
+              key="shortTitle"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.5 }}
               onHoverStart={() => setShowGooeyText(true)}
               onHoverEnd={() => setShowGooeyText(false)}
               onClick={() => setShowGooeyText(!showGooeyText)}
+              className="cursor-pointer"
             >
               <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 PP
@@ -58,24 +59,20 @@ export const Header = () => {
           )}
         </AnimatePresence>
       </div>
-      <AnimatePresence>
-        {showSubtitle && showGooeyText && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
-            className="h-24 flex items-center justify-center"
-          >
-            <GooeyText
-              texts={["You WILL drink", "the AI slop", "You WILL drink the AI slop"]}
-              morphTime={1.5}
-              cooldownTime={1.5}
-              className="text-xl text-muted-foreground max-w-3xl mx-auto text-center leading-relaxed"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+      {showGooeyText && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
+          className="h-24 flex items-center justify-center"
+        >
+          <GooeyText
+            texts={["You", "WILL", "drink", "the", "AI", "slop"]}
+            className="text-2xl md:text-4xl tracking-wider font-light max-w-3xl w-full"
+          />
+        </motion.div>
+      )}
+    </div>
   );
 };
