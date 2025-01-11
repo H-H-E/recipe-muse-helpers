@@ -1,10 +1,21 @@
 import { Beaker } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SparklesText } from "./SparklesText";
+import { GooeyText } from "./GooeyText";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Header = () => {
   const [showSubtitle, setShowSubtitle] = useState(false);
+  const [showShortTitle, setShowShortTitle] = useState(false);
+
+  useEffect(() => {
+    if (showSubtitle) {
+      const timer = setTimeout(() => {
+        setShowShortTitle(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSubtitle]);
 
   return (
     <header className="mb-12">
@@ -20,21 +31,43 @@ export const Header = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        <SparklesText
-          words="Pulp Picker"
-          onAnimationComplete={() => setShowSubtitle(true)}
-        />
+        <AnimatePresence mode="wait">
+          {!showShortTitle ? (
+            <SparklesText
+              key="full-title"
+              words="Pulp Picker"
+              onAnimationComplete={() => setShowSubtitle(true)}
+            />
+          ) : (
+            <motion.div
+              key="short-title"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                PP
+              </h1>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <AnimatePresence>
         {showSubtitle && (
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto text-center leading-relaxed"
+            className="h-24 flex items-center justify-center"
           >
-            You WILL drink the AI slop
-          </motion.p>
+            <GooeyText
+              texts={["You WILL drink", "the AI slop", "You WILL drink the AI slop"]}
+              morphTime={1.5}
+              cooldownTime={1.5}
+              className="text-xl text-muted-foreground max-w-3xl mx-auto text-center leading-relaxed"
+            />
+          </motion.div>
         )}
       </AnimatePresence>
     </header>
