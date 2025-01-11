@@ -43,15 +43,24 @@ Follow these steps to create your smoothie ideas:
    - Include creamy elements if available
    - Add appropriate liquid bases ${strictMode ? 'only if provided in the ingredients list' : ''}
    - Consider nutritional boosters if available
-   - Use spices/herbs for complexity ${strictMode ? 'only if listed in the ingredients' : 'as appropriate'}
+   - Use spices/herbs for complexity ${strictMode ? 'only if listed in the ingredients' : ''}
 
 ${strictMode ? 'IMPORTANT: You must ONLY use ingredients that were explicitly provided. Do not add any additional ingredients, even common ones like ice or water unless they were specified in the input.' : ''}
 
-Always return your response in valid JSON format with the exact structure shown in the example.`;
+Return your response in this format for each smoothie:
+{
+  "recipes": [
+    {
+      "name": "Creative Smoothie Name",
+      "ingredients": ["ingredient 1", "ingredient 2", ...],
+      "instructions": ["step 1", "step 2", ...],
+      "nutritionalBenefits": ["benefit 1", "benefit 2", ...]
+    }
+  ]
+}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      response_format: { type: "json_object" },
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -60,18 +69,7 @@ Always return your response in valid JSON format with the exact structure shown 
         {
           role: "user",
           content: `Generate ${numIdeas} smoothie recipe${numIdeas > 1 ? 's' : ''} using ${strictMode ? 'ONLY' : 'some or all of'} these ingredients: ${ingredients}. 
-          ${strictMode ? 'DO NOT include any ingredients that are not in this list.' : 'You may suggest complementary ingredients.'}
-          Return the response in this exact JSON format:
-          {
-            "recipes": [
-              {
-                "name": "string",
-                "ingredients": ["string"],
-                "instructions": ["string"],
-                "nutritionalBenefits": ["string"]
-              }
-            ]
-          }`
+          ${strictMode ? 'DO NOT include any ingredients that are not in this list.' : 'You may suggest complementary ingredients.'}`
         }
       ],
       temperature: strictMode ? 0.3 : 0.7,
@@ -79,10 +77,24 @@ Always return your response in valid JSON format with the exact structure shown 
     });
 
     console.log('OpenAI response:', response);
-    const parsedResponse = JSON.parse(response.choices[0].message.content);
-    return parsedResponse.recipes;
+    
+    try {
+      const content = response.choices[0].message.content;
+      const parsedResponse = JSON.parse(content);
+      if (!parsedResponse.recipes || !Array.isArray(parsedResponse.recipes)) {
+        throw new Error('Invalid response format from OpenAI');
+      }
+      return parsedResponse.recipes;
+    } catch (parseError) {
+      console.error('Error parsing OpenAI response:', parseError);
+      throw new Error('Failed to parse the recipe response. Please try again.');
+    }
   } catch (error) {
     console.error('Error generating recipes:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error('An unexpected error occurred while generating recipes');
+    }
   }
 };
