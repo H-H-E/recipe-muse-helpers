@@ -7,6 +7,7 @@ import { ViewToggle } from "./recipe-gallery/ViewToggle";
 import { CurrentRecipes } from "./recipe-gallery/CurrentRecipes";
 import { SavedRecipes } from "./recipe-gallery/SavedRecipes";
 import { Recipe } from "@/types/recipe";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RecipeGalleriesProps {
   currentRecipes: Recipe[];
@@ -16,6 +17,7 @@ interface RecipeGalleriesProps {
 export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleriesProps) => {
   const [galleryType, setGalleryType] = useState<"grid" | "carousel">("grid");
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleSaveRecipe = (recipe: Recipe) => {
     saveSmoothieRecipes([recipe], ingredients);
@@ -35,8 +37,8 @@ export const RecipeGalleries = ({ currentRecipes, ingredients }: RecipeGalleries
   return (
     <div className="space-y-8">
       <Tabs defaultValue="current" className="w-full">
-        <div className="flex justify-between items-center mb-4">
-          <TabsList className="grid w-[400px] grid-cols-2">
+        <div className={`flex ${isMobile ? 'flex-col' : 'justify-between'} items-center gap-4 mb-4`}>
+          <TabsList className="grid w-full max-w-[400px] grid-cols-2">
             <TabsTrigger value="current" className="text-base py-3">Current Session</TabsTrigger>
             <TabsTrigger value="saved" className="text-base py-3">Saved Recipes</TabsTrigger>
           </TabsList>
